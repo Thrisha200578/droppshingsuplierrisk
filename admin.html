@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — SupplyChain AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ink:        #0d1117;
+      --ink-2:      #3d4451;
+      --ink-3:      #8892a4;
+      --surface:    #ffffff;
+      --surface-2:  #f4f6fb;
+      --surface-3:  #edf0f7;
+      --accent:     #2454ff;
+      --accent-h:   #1a3fd4;
+      --accent-g:   rgba(36,84,255,.14);
+      --success:    #00c27c;
+      --success-bg: #e6faf3;
+      --warning:    #f59e0b;
+      --warning-bg: #fef9ec;
+      --danger:     #ff4757;
+      --danger-bg:  #fff0f1;
+      --border:     #e2e8f0;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,.07);
+      --shadow:     0 4px 16px rgba(0,0,0,.08);
+      --shadow-lg:  0 10px 32px rgba(0,0,0,.12);
+      --sidebar-w:  240px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--surface-2);
+      color: var(--ink);
+      display: flex;
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* ═══════════════════════════════════════
+       SIDEBAR
+    ═══════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 200;
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .brand-icon {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+
+    .brand-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      line-height: 1.2;
+    }
+
+    .brand-text span { color: var(--accent); }
+
+    .sidebar-section {
+      padding: 20px 12px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      margin: 2px 8px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all .2s;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      position: relative;
+    }
+
+    .nav-item svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+
+    .nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.88); }
+
+    .nav-item.active {
+      background: rgba(36,84,255,.25);
+      color: white;
+    }
+
+    .nav-item.active svg { stroke: var(--accent); }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--danger);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 1px 6px;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .nav-badge.amber { background: var(--warning); }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .admin-profile:hover { background: rgba(255,255,255,.06); }
+
+    .avatar {
+      width: 34px; height: 34px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: white;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .profile-info { flex: 1; min-width: 0; }
+    .profile-name { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .profile-role { font-size: 11px; color: rgba(255,255,255,.4); }
+
+    .logout-btn {
+      background: none; border: none;
+      color: rgba(255,255,255,.3);
+      cursor: pointer; padding: 4px;
+      border-radius: 4px;
+      transition: color .2s;
+    }
+
+    .logout-btn:hover { color: var(--danger); }
+    .logout-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ═══════════════════════════════════════
+       MAIN AREA
+    ═══════════════════════════════════════ */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ─── TOP BAR ──────────────────────────── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .page-title-area h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -.3px;
+    }
+
+    .page-title-area p { font-size: 12px; color: var(--ink-3); }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      padding: 0 12px;
+      height: 38px;
+      width: 240px;
+      transition: all .2s;
+    }
+
+    .search-bar:focus-within { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px var(--accent-g); }
+
+    .search-bar svg { width: 15px; height: 15px; stroke: var(--ink-3); fill: none; stroke-width: 2; flex-shrink: 0; }
+
+    .search-bar input {
+      border: none; outline: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      width: 100%;
+    }
+
+    .search-bar input::placeholder { color: var(--ink-3); }
+
+    .icon-btn {
+      width: 38px; height: 38px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+    }
+
+    .icon-btn:hover { border-color: var(--accent); background: var(--accent-g); }
+    .icon-btn svg { width: 17px; height: 17px; stroke: var(--ink-2); fill: none; stroke-width: 2; }
+
+    .notif-dot {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 8px; height: 8px;
+      background: var(--danger);
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+
+    /* ─── CONTENT ──────────────────────────── */
+    .content { padding: 28px 32px; }
+
+    /* pages */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── STATS GRID ───────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+    }
+
+    .stat-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      border-radius: 14px 0 0 14px;
+    }
+
+    .stat-card.c-blue::after  { background: var(--accent); }
+    .stat-card.c-green::after { background: var(--success); }
+    .stat-card.c-amber::after { background: var(--warning); }
+    .stat-card.c-red::after   { background: var(--danger); }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .stat-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .stat-icon svg { width: 18px; height: 18px; fill: none; stroke-width: 2; }
+    .stat-card.c-blue  .stat-icon { background: rgba(36,84,255,.1);  }
+    .stat-card.c-blue  .stat-icon svg { stroke: var(--accent); }
+    .stat-card.c-green .stat-icon { background: rgba(0,194,124,.1); }
+    .stat-card.c-green .stat-icon svg { stroke: var(--success); }
+    .stat-card.c-amber .stat-icon { background: rgba(245,158,11,.1); }
+    .stat-card.c-amber .stat-icon svg { stroke: var(--warning); }
+    .stat-card.c-red   .stat-icon { background: rgba(255,71,87,.1);  }
+    .stat-card.c-red   .stat-icon svg { stroke: var(--danger); }
+
+    .stat-label { font-size: 12px; color: var(--ink-3); font-weight: 500; margin-bottom: 4px; }
+    .stat-val   { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 700; color: var(--ink); line-height: 1; }
+    .stat-sub   { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+
+    /* ─── SECTION CARD ─────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-head-left h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .card-head-left p { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+
+    .card-body { padding: 20px 22px; }
+
+    /* ─── FILTER TABS ──────────────────────── */
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .ftab {
+      padding: 6px 14px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--ink-2);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .ftab:hover { border-color: var(--accent); color: var(--accent); }
+
+    .ftab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .ftab .count {
+      display: inline-block;
+      background: rgba(255,255,255,.25);
+      border-radius: 20px;
+      padding: 0 5px;
+      font-size: 10px;
+      margin-left: 4px;
+    }
+
+    .ftab:not(.active) .count {
+      background: var(--surface-3);
+      color: var(--ink-3);
+    }
+
+    /* ─── MANUFACTURER GRID ────────────────── */
+    .mfg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .mfg-card {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      background: var(--surface);
+      transition: all .2s;
+      position: relative;
+    }
+
+    .mfg-card:hover { box-shadow: var(--shadow); border-color: var(--accent); }
+
+    .mfg-card.pending { border-left: 4px solid var(--warning); }
+    .mfg-card.rejected { border-left: 4px solid var(--danger); }
+    .mfg-card.verified { border-left: 4px solid var(--success); }
+
+    .mfg-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .mfg-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .mfg-email { font-size: 12px; color: var(--ink-3); }
+
+    .mfg-location {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--ink-3);
+      margin-top: 3px;
+    }
+
+    .mfg-location svg { width: 12px; height: 12px; }
+
+    /* risk score badge — the hero element on each card */
+    .risk-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 56px; height: 56px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .risk-badge .rb-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .risk-badge .rb-lbl { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-top: 2px; }
+
+    .risk-low  .risk-badge { background: var(--success-bg); }
+    .risk-low  .risk-badge .rb-val, .risk-low .risk-badge .rb-lbl { color: var(--success); }
+    .risk-med  .risk-badge { background: var(--warning-bg); }
+    .risk-med  .risk-badge .rb-val, .risk-med .risk-badge .rb-lbl { color: var(--warning); }
+    .risk-high .risk-badge { background: var(--danger-bg); }
+    .risk-high .risk-badge .rb-val, .risk-high .risk-badge .rb-lbl { color: var(--danger); }
+
+    .mfg-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .meta-item { background: var(--surface-2); border-radius: 8px; padding: 8px 10px; }
+    .meta-label { font-size: 10px; font-weight: 600; color: var(--ink-3); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 2px; }
+    .meta-val   { font-size: 13px; font-weight: 600; color: var(--ink); }
+
+    /* sentiment mini bar */
+    .sentiment-bar { height: 4px; background: var(--border); border-radius: 4px; margin-top: 4px; overflow: hidden; }
+    .sentiment-fill { height: 100%; border-radius: 4px; transition: width .4s; }
+
+    .mfg-footer {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ─── BUTTONS ──────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: none; border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+    .btn-primary { background: var(--accent); color: white; flex: 1; }
+    .btn-primary:hover { background: var(--accent-h); }
+
+    .btn-success { background: var(--success-bg); color: var(--success); flex: 1; }
+    .btn-success:hover { background: #c5f5e4; }
+
+    .btn-danger  { background: var(--danger-bg);  color: var(--danger);  flex: 1; }
+    .btn-danger:hover  { background: #ffd9dd; }
+
+    .btn-ghost { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border); flex: 1; }
+    .btn-ghost:hover { background: var(--surface-3); }
+
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ─── STATUS BADGE ─────────────────────── */
+    .status-pill {
+      display: inline-flex; align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+
+    .pill-pending  { background: var(--warning-bg); color: #92400e; }
+    .pill-pending::before  { background: var(--warning); }
+    .pill-verified { background: var(--success-bg); color: #065f46; }
+    .pill-verified::before { background: var(--success); }
+    .pill-rejected { background: var(--danger-bg);  color: #991b1b; }
+    .pill-rejected::before { background: var(--danger); }
+
+    /* ─── PERFORMANCE TABLE ────────────────── */
+    .tbl { width: 100%; border-collapse: collapse; }
+
+    .tbl th {
+      background: var(--surface-2);
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .tbl th:hover { background: var(--surface-3); color: var(--ink); }
+    .tbl th.sort-asc::after  { content: ' ↑'; color: var(--accent); }
+    .tbl th.sort-desc::after { content: ' ↓'; color: var(--accent); }
+
+    .tbl td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl tbody tr:hover { background: var(--surface-2); }
+
+    .tbl .supplier-cell { font-weight: 600; }
+
+    /* progress pill in table */
+    .prog-wrap { display: flex; align-items: center; gap: 8px; }
+    .prog-bar { flex: 1; height: 5px; background: var(--border); border-radius: 4px; overflow: hidden; min-width: 60px; }
+    .prog-fill { height: 100%; border-radius: 4px; }
+    .prog-on   { background: var(--success); }
+    .prog-del  { background: var(--danger); }
+
+    /* risk score chip in table */
+    .risk-chip {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px; font-weight: 700;
+    }
+
+    .rc-low  { background: var(--success-bg); color: var(--success); }
+    .rc-med  { background: var(--warning-bg); color: #92400e; }
+    .rc-high { background: var(--danger-bg);  color: var(--danger); }
+
+    /* sentiment chip */
+    .sent-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px; font-weight: 600;
+    }
+
+    .sent-pos { background: var(--success-bg); color: var(--success); }
+    .sent-neu { background: var(--warning-bg); color: #92400e; }
+    .sent-neg { background: var(--danger-bg);  color: var(--danger); }
+
+    /* ─── MODAL ────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(13,17,23,.6);
+      backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 500;
+    }
+
+    .overlay.open { display: flex; animation: fadeIn .25s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      width: 90%;
+      max-width: 860px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp .25s ease;
+    }
+
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .modal-hd {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: var(--surface);
+      z-index: 1;
+    }
+
+    .modal-hd h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px; font-weight: 700;
+      color: var(--ink);
+    }
+
+    .close-btn {
+      width: 32px; height: 32px;
+      background: var(--surface-2);
+      border: none; border-radius: 8px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink-3);
+      font-size: 18px;
+      transition: all .2s;
+    }
+
+    .close-btn:hover { background: var(--danger-bg); color: var(--danger); }
+
+    .modal-body { padding: 24px; }
+
+    .modal-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .modal-info-item {
+      background: var(--surface-2);
+      padding: 12px 14px;
+      border-radius: 10px;
+    }
+
+    .modal-info-item label { font-size: 10px; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 4px; }
+    .modal-info-item span  { font-size: 14px; font-weight: 600; color: var(--ink); }
+
+    /* RISK BREAKDOWN in modal */
+    .risk-breakdown {
+      background: var(--surface-2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .risk-breakdown h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+
+    .risk-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .risk-row:last-child { margin-bottom: 0; }
+    .risk-row-label { font-size: 12px; font-weight: 600; color: var(--ink-2); width: 130px; flex-shrink: 0; }
+    .risk-row-bar { flex: 1; height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .risk-row-fill { height: 100%; border-radius: 4px; transition: width .5s; }
+    .risk-row-val { font-size: 12px; font-weight: 700; width: 36px; text-align: right; }
+
+    .doc-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+
+    .doc-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: all .2s;
+    }
+
+    .doc-item:hover { border-color: var(--accent); background: var(--accent-g); }
+
+    .doc-left { display: flex; align-items: center; gap: 12px; }
+
+    .doc-icon {
+      width: 36px; height: 36px;
+      background: rgba(36,84,255,.1);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .doc-icon svg { width: 16px; height: 16px; stroke: var(--accent); fill: none; stroke-width: 2; }
+    .doc-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .doc-date { font-size: 11px; color: var(--ink-3); }
+
+    .preview-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .preview-box img { width: 100%; display: block; }
+
+    .notes-section { margin-bottom: 20px; }
+    .notes-section label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 8px; }
+
+    .notes-textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 10px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      resize: vertical;
+      outline: none;
+      transition: all .2s;
+    }
+
+    .notes-textarea:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px var(--accent-g); }
+
+    .modal-ft {
+      display: flex; gap: 10px; justify-content: flex-end;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── NOTIFICATIONS PANEL ──────────────── */
+    .notif-panel {
+      position: absolute;
+      top: calc(100% + 8px); right: 0;
+      width: 320px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      z-index: 300;
+      display: none;
+    }
+
+    .notif-panel.open { display: block; animation: slideUp .2s ease; }
+
+    .notif-panel-hd {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .notif-panel-hd h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+
+    .notif-list { max-height: 320px; overflow-y: auto; }
+
+    .notif-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--surface-2); }
+    .notif-item.unread { background: rgba(36,84,255,.04); }
+
+    .notif-item .nt { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+    .notif-item .nm { font-size: 12px; color: var(--ink-3); }
+    .notif-item .ntime { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+
+    .mark-all-read {
+      display: block; width: 100%;
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      background: none;
+      border: none;
+      border-top: 1px solid var(--border);
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .mark-all-read:hover { background: var(--accent-g); }
+
+    /* ─── TOAST ────────────────────────────── */
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+
+    .toast {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      font-weight: 500;
+      min-width: 260px;
+      animation: slideInR .3s ease;
+    }
+
+    @keyframes slideInR { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .toast svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; flex-shrink: 0; }
+    .toast.t-success { background: var(--success-bg); color: var(--success); border: 1px solid #a7f0d1; }
+    .toast.t-error   { background: var(--danger-bg);  color: var(--danger);  border: 1px solid #ffc0c8; }
+    .toast.t-info    { background: rgba(36,84,255,.08); color: var(--accent); border: 1px solid rgba(36,84,255,.2); }
+
+    /* ─── EMPTY STATE ──────────────────────── */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 48px 20px;
+      color: var(--ink-3);
+      text-align: center;
+    }
+
+    .empty-state svg { width: 48px; height: 48px; stroke: var(--ink-3); fill: none; stroke-width: 1.5; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ─── RESPONSIVE ───────────────────────── */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main { margin-left: 0; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </div>
+    <span class="brand-text">Supply<span>Chain</span> AI</span>
+  </div>
+
+  <div class="sidebar-section">Main</div>
+
+  <a class="nav-item active" onclick="showPage('overview')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Overview
+  </a>
+
+  <a class="nav-item" onclick="showPage('approvals')">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Manufacturers
+    <span class="nav-badge" id="pendingNavBadge">2</span>
+  </a>
+
+  <a class="nav-item" onclick="showPage('reports')">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6"  y1="20" x2="6"  y2="14"/></svg>
+    Performance Reports
+  </a>
+
+  <div class="sidebar-section">Platform</div>
+
+  <a class="nav-item" onclick="showPage('ads')">
+    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+    Ad Management
+    <span class="nav-badge amber" id="adsNavBadge">3</span>
+  </a>
+
+  <a class="nav-item" onclick="showPage('disputes')">
+    <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Disputes
+    <span class="nav-badge" id="disputesNavBadge">1</span>
+  </a>
+
+  <div class="sidebar-footer">
+    <div class="admin-profile">
+      <div class="avatar">AD</div>
+      <div class="profile-info">
+        <div class="profile-name">Admin User</div>
+        <div class="profile-role">Super Admin</div>
+      </div>
+      <button class="logout-btn" title="Logout" onclick="logout()">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="page-title-area">
+      <h1 id="pageTitle">Overview</h1>
+      <p id="pageSubtitle">Platform health at a glance</p>
+    </div>
+
+    <div class="topbar-right">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="globalSearch" type="text" placeholder="Search manufacturers…" oninput="handleSearch(this.value)" />
+      </div>
+
+      <div style="position:relative;">
+        <button class="icon-btn" onclick="toggleNotif()">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot" id="notifDot"></span>
+        </button>
+
+        <div class="notif-panel" id="notifPanel">
+          <div class="notif-panel-hd">
+            <h3>Notifications</h3>
+            <span id="unreadCount" style="font-size:11px;color:var(--ink-3)">2 unread</span>
+          </div>
+          <div class="notif-list" id="notifList"></div>
+          <button class="mark-all-read" onclick="markAllRead()">Mark all as read</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ════════ PAGE: OVERVIEW ════════ -->
+    <div class="page active" id="page-overview">
+      <div class="stats-grid">
+        <div class="stat-card c-blue">
+          <div class="stat-top">
+            <div>
+              <div class="stat-label">Total Manufacturers</div>
+              <div class="stat-val" id="st-total">5</div>
+              <div class="stat-sub">Across all categories</div>
+            </div>
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="stat-top">
+            <div>
+              <div class="stat-label">Verified</div>
+              <div class="stat-val" id="st-verified">3</div>
+              <div class="stat-sub">Active on platform</div>
+            </div>
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card c-amber">
+          <div class="stat-top">
+            <div>
+              <div class="stat-label">Pending Approval</div>
+              <div class="stat-val" id="st-pending">2</div>
+              <div class="stat-sub">Awaiting review</div>
+            </div>
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card c-red">
+          <div class="stat-top">
+            <div>
+              <div class="stat-label">Rejected</div>
+              <div class="stat-val" id="st-rejected">0</div>
+              <div class="stat-sub">Applications declined</div>
+            </div>
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick pending -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <h2>⏳ Pending Approvals</h2>
+            <p>Manufacturers waiting for your review</p>
+          </div>
+          <button class="btn btn-primary" style="flex:0;padding:8px 16px;font-size:12px;" onclick="showPage('approvals')">
+            View All →
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="mfg-grid" id="overview-pending-grid"></div>
+        </div>
+      </div>
+
+      <!-- High risk alerts -->
+      <div class="card" id="highRiskCard">
+        <div class="card-head">
+          <div class="card-head-left">
+            <h2>🚨 High Risk Suppliers</h2>
+            <p>Verified suppliers with risk score ≥ 70 — require attention</p>
+          </div>
+        </div>
+        <div class="card-body" id="highRiskBody"></div>
+      </div>
+    </div>
+
+    <!-- ════════ PAGE: MANUFACTURERS ════════ -->
+    <div class="page" id="page-approvals">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <h2>Manufacturer Management</h2>
+            <p>Approve, reject, and monitor all manufacturers</p>
+          </div>
+          <div class="filter-tabs" id="mfgFilterTabs">
+            <button class="ftab active" onclick="setMfgFilter('all',this)">All <span class="count" id="fc-all">5</span></button>
+            <button class="ftab" onclick="setMfgFilter('pending',this)">Pending <span class="count" id="fc-pending">2</span></button>
+            <button class="ftab" onclick="setMfgFilter('verified',this)">Verified <span class="count" id="fc-verified">3</span></button>
+            <button class="ftab" onclick="setMfgFilter('rejected',this)">Rejected <span class="count" id="fc-rejected">0</span></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mfg-grid" id="main-mfg-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PAGE: PERFORMANCE REPORTS ════════ -->
+    <div class="page" id="page-reports">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <h2>Supplier Performance Reports</h2>
+            <p>Risk scores, sentiment analysis, and delivery metrics — click column headers to sort</p>
+          </div>
+          <div class="filter-tabs">
+            <button class="ftab active" onclick="setReportFilter('all',this)">All</button>
+            <button class="ftab" onclick="setReportFilter('high',this)">🔴 High Risk</button>
+            <button class="ftab" onclick="setReportFilter('medium',this)">🟡 Medium</button>
+            <button class="ftab" onclick="setReportFilter('low',this)">🟢 Low Risk</button>
+          </div>
+        </div>
+        <div class="card-body" style="padding:0;overflow:auto;">
+          <table class="tbl" id="reportsTbl">
+            <thead>
+              <tr>
+                <th onclick="sortReport('supplier')">Supplier</th>
+                <th onclick="sortReport('orders')">Orders</th>
+                <th onclick="sortReport('onTime')">On-Time %</th>
+                <th onclick="sortReport('delay')">Delay %</th>
+                <th onclick="sortReport('rating')">Rating</th>
+                <th onclick="sortReport('risk')">Risk Score</th>
+                <th onclick="sortReport('sentiment')">Sentiment</th>
+              </tr>
+            </thead>
+            <tbody id="reportsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PAGE: ADS ════════ -->
+    <div class="page" id="page-ads">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <h2>Ad Management</h2>
+            <p>Review and approve manufacturer advertisements</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mfg-grid">
+            <div class="mfg-card">
+              <div class="mfg-top">
+                <div>
+                  <div class="mfg-name">TechPro Manufacturing</div>
+                  <div class="mfg-email">Banner Ad — Electronics</div>
+                </div>
+                <span class="status-pill pill-pending">Pending</span>
+              </div>
+              <div class="meta-item" style="margin-bottom:10px;">
+                <div class="meta-label">Ad Copy</div>
+                <div class="meta-val" style="font-size:12px;font-weight:400;color:var(--ink-2);">"Best electronics supplier for dropshippers. Fast shipping, low MOQ."</div>
+              </div>
+              <div class="mfg-footer">
+                <button class="btn btn-success" onclick="toast('Ad approved!','success')">✓ Approve</button>
+                <button class="btn btn-danger"  onclick="toast('Ad rejected.','error')">✗ Reject</button>
+              </div>
+            </div>
+            <div class="mfg-card">
+              <div class="mfg-top">
+                <div>
+                  <div class="mfg-name">EcoPackaging Group</div>
+                  <div class="mfg-email">Sidebar Ad — Packaging</div>
+                </div>
+                <span class="status-pill pill-pending">Pending</span>
+              </div>
+              <div class="meta-item" style="margin-bottom:10px;">
+                <div class="meta-label">Ad Copy</div>
+                <div class="meta-val" style="font-size:12px;font-weight:400;color:var(--ink-2);">"Eco-friendly packaging solutions. 95% on-time delivery. Trusted by 500+ sellers."</div>
+              </div>
+              <div class="mfg-footer">
+                <button class="btn btn-success" onclick="toast('Ad approved!','success')">✓ Approve</button>
+                <button class="btn btn-danger"  onclick="toast('Ad rejected.','error')">✗ Reject</button>
+              </div>
+            </div>
+            <div class="mfg-card verified">
+              <div class="mfg-top">
+                <div>
+                  <div class="mfg-name">My Beauty</div>
+                  <div class="mfg-email">Featured Banner — Textiles</div>
+                </div>
+                <span class="status-pill pill-verified">Live</span>
+              </div>
+              <div class="meta-item" style="margin-bottom:10px;">
+                <div class="meta-label">Ad Copy</div>
+                <div class="meta-val" style="font-size:12px;font-weight:400;color:var(--ink-2);">"Premium textile manufacturer. Rated 4.5★ by 120+ dropshippers."</div>
+              </div>
+              <div class="mfg-footer">
+                <button class="btn btn-danger" onclick="toast('Ad paused.','error')">⏸ Pause</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ PAGE: DISPUTES ════════ -->
+    <div class="page" id="page-disputes">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <h2>Dispute Management</h2>
+            <p>Dropshipper complaints against manufacturers</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="mfg-card" style="max-width:600px;border-left:4px solid var(--danger);">
+            <div class="mfg-top">
+              <div>
+                <div class="mfg-name">Order #ORD-8841 — AyurCult</div>
+                <div class="mfg-email">Reported by: seller@test.com · 2 days ago</div>
+              </div>
+              <span class="status-pill pill-pending">Open</span>
+            </div>
+            <div class="meta-item" style="margin-bottom:12px;">
+              <div class="meta-label">Complaint</div>
+              <div class="meta-val" style="font-size:12px;font-weight:400;color:var(--ink-2);">
+                "Product delivered was completely different from what was listed. Packaging was also damaged. Requesting full refund and manufacturer review."
+              </div>
+            </div>
+            <div class="mfg-footer">
+              <button class="btn btn-success" onclick="toast('Dispute resolved in favour of dropshipper.','success')">Resolve — Favour Dropshipper</button>
+              <button class="btn btn-ghost"   onclick="toast('Dispute closed.','info')">Close Dispute</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ═══════════ MODAL ═══════════ -->
+<div class="overlay" id="mfgModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2 id="modalTitle">Manufacturer Review</h2>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-info-grid" id="modalInfoGrid"></div>
+
+      <!-- RISK BREAKDOWN -->
+      <div class="risk-breakdown" id="modalRiskBreakdown"></div>
+
+      <!-- DOCUMENTS -->
+      <h3 style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:12px;">Uploaded Documents</h3>
+      <div class="doc-list" id="modalDocList"></div>
+
+      <!-- PREVIEW -->
+      <h3 style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:10px;">Document Preview</h3>
+      <div class="preview-box"><img id="previewImg" src="" alt="preview" /></div>
+
+      <!-- NOTES -->
+      <div class="notes-section">
+        <label>Admin Notes <span style="color:var(--ink-3);font-weight:400;">(required for rejection)</span></label>
+        <textarea class="notes-textarea" id="adminNotes" placeholder="Add verification notes or rejection reason…"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-ft">
+      <button class="btn btn-ghost" style="flex:0;padding:8px 20px;" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger"  id="modalRejectBtn"  onclick="modalReject()">✗ Reject Application</button>
+      <button class="btn btn-success" id="modalApproveBtn" onclick="modalApprove()">✓ Approve Manufacturer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  /* ─────────────────────────────────────
+     DATA
+  ───────────────────────────────────── */
+  const manufacturers = [
+    { id:1, companyName:'TechPro Manufacturing', email:'contact@techpro.com', location:'Shenzhen, China', category:'Electronics', status:'Verified', rating:4.8, reviews:256, sentiment:0.89, fulfillment:92, refundRate:3, responseTime:'< 2 hrs',
+      documents:[{type:'GST Certificate',date:'2024-01-10'},{type:'Business License',date:'2024-01-10'},{type:'ISO 9001 Certification',date:'2024-01-11'}]},
+    { id:2, companyName:'Beautiful Homes', email:'contact@beautifulhome.com', location:'Bangkok, Thailand', category:'Home Decor', status:'Pending', rating:4.2, reviews:48, sentiment:0.62, fulfillment:78, refundRate:10, responseTime:'< 6 hrs',
+      documents:[{type:'Business License',date:'2024-01-15'},{type:'Factory Certificate',date:'2024-01-15'}]},
+    { id:3, companyName:'My Beauty', email:'contact@mybeauty.com', location:'Mumbai, India', category:'Textiles', status:'Verified', rating:4.5, reviews:120, sentiment:0.78, fulfillment:95, refundRate:5, responseTime:'< 4 hrs',
+      documents:[{type:'GST Certificate',date:'2024-01-05'},{type:'Business License',date:'2024-01-05'},{type:'Factory Certificate',date:'2024-01-06'}]},
+    { id:4, companyName:'EcoPackaging Group', email:'sales@ecopackaging.com', location:'Ho Chi Minh, Vietnam', category:'Packaging', status:'Pending', rating:4.9, reviews:60, sentiment:0.95, fulfillment:88, refundRate:2, responseTime:'< 3 hrs',
+      documents:[{type:'Business License',date:'2024-01-18'},{type:'Environmental Cert.',date:'2024-01-18'},{type:'Quality Certificate',date:'2024-01-19'}]},
+    { id:5, companyName:'AyurCult', email:'info@ayurcult.com', location:'Seoul, South Korea', category:'Materials', status:'Verified', rating:3.8, reviews:32, sentiment:0.48, fulfillment:72, refundRate:18, responseTime:'> 12 hrs',
+      documents:[{type:'Business License',date:'2024-01-01'},{type:'Factory Certificate',date:'2024-01-01'},{type:'ISO 9001',date:'2024-01-02'}]}
+  ];
+
+  const supplierReports = [
+    { supplier:'TechPro Manufacturing', orders:1250, onTime:92, delay:8,  rating:4.8, risk:18, sentiment:0.89 },
+    { supplier:'Beautiful Homes',       orders:890,  onTime:78, delay:22, rating:4.2, risk:55, sentiment:0.62 },
+    { supplier:'My Beauty',             orders:2100, onTime:95, delay:5,  rating:4.5, risk:22, sentiment:0.78 },
+    { supplier:'EcoPackaging Group',    orders:650,  onTime:88, delay:12, rating:4.9, risk:14, sentiment:0.95 },
+    { supplier:'AyurCult',              orders:480,  onTime:72, delay:28, rating:3.8, risk:82, sentiment:0.48 }
+  ];
+
+  const notifications = [
+    { id:1, title:'New Manufacturer Application', message:'EcoPackaging Group submitted application.', time:'2 hrs ago', unread:true },
+    { id:2, title:'High Risk Alert', message:'AyurCult risk score is now 82 — review recommended.', time:'5 hrs ago', unread:true },
+    { id:3, title:'Application Approved', message:'TechPro Manufacturing was approved.', time:'1 day ago', unread:false },
+    { id:4, title:'New Dispute Filed', message:'Order #ORD-8841 disputed against AyurCult.', time:'2 days ago', unread:false },
+  ];
+
+  /* ─────────────────────────────────────
+     RISK SCORE CALCULATION
+     Combines: rating (40%), sentiment (30%), fulfillment (20%), refund rate inverse (10%)
+  ───────────────────────────────────── */
+  function calcRiskScore(m) {
+    const r  = ((m.rating || 0) / 5) * 100;
+    const s  = (m.sentiment || 0) * 100;
+    const f  = (m.fulfillment || 0);
+    const rf = Math.max(0, 100 - (m.refundRate || 0) * 5);
+    const score = (r * .4) + (s * .3) + (f * .2) + (rf * .1);
+    // Invert: higher score = LOWER risk
+    return Math.round(100 - score);
+  }
+
+  function riskLevel(score) {
+    if (score <= 35) return 'low';
+    if (score <= 65) return 'med';
+    return 'high';
+  }
+
+  function riskLabel(score) {
+    const l = riskLevel(score);
+    return l === 'low' ? 'Low Risk' : l === 'med' ? 'Medium' : 'High Risk';
+  }
+
+  /* ─────────────────────────────────────
+     MANUFACTURER CARD RENDERER
+  ───────────────────────────────────── */
+  function mfgCardHTML(m) {
+    const rs = calcRiskScore(m);
+    const rl = riskLevel(rs);
+    const sentColor = m.sentiment >= .75 ? 'var(--success)' : m.sentiment >= .55 ? 'var(--warning)' : 'var(--danger)';
+    const approveBtn = m.status !== 'Verified' ?
+      `<button class="btn btn-success" onclick="quickApprove(${m.id})"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Approve</button>` : '';
+    const rejectBtn = m.status === 'Pending' ?
+      `<button class="btn btn-danger"  onclick="openModal(${m.id})"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Reject</button>` : '';
+    return `
+      <div class="mfg-card ${m.status.toLowerCase()} risk-${rl}" id="mcard-${m.id}">
+        <div class="mfg-top">
+          <div>
+            <div class="mfg-name">${m.companyName}</div>
+            <div class="mfg-email">${m.email}</div>
+            <div class="mfg-location">
+              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              ${m.location}
+            </div>
+          </div>
+          <div class="risk-badge">
+            <span class="rb-val">${rs}</span>
+            <span class="rb-lbl">Risk</span>
+          </div>
+        </div>
+
+        <div class="mfg-meta">
+          <div class="meta-item">
+            <div class="meta-label">Category</div>
+            <div class="meta-val">${m.category}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Rating</div>
+            <div class="meta-val">⭐ ${m.rating.toFixed(1)} <span style="color:var(--ink-3);font-size:11px;">(${m.reviews})</span></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Status</div>
+            <div class="meta-val"><span class="status-pill pill-${m.status.toLowerCase()}">${m.status}</span></div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Sentiment</div>
+            <div class="meta-val" style="color:${sentColor}">${(m.sentiment * 100).toFixed(0)}%</div>
+            <div class="sentiment-bar"><div class="sentiment-fill" style="width:${m.sentiment*100}%;background:${sentColor}"></div></div>
+          </div>
+        </div>
+
+        <div class="mfg-footer">
+          <button class="btn btn-ghost" onclick="openModal(${m.id})">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            View Docs
+          </button>
+          ${approveBtn}
+          ${rejectBtn}
+        </div>
+      </div>`;
+  }
+
+  /* ─────────────────────────────────────
+     RENDER GRIDS
+  ───────────────────────────────────── */
+  let currentMfgFilter = 'all';
+
+  function renderMfgGrid(containerId, items) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!items.length) {
+      el.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <p>No manufacturers in this category</p></div>`;
+      return;
+    }
+    el.innerHTML = items.map(mfgCardHTML).join('');
+  }
+
+  function setMfgFilter(filter, btn) {
+    currentMfgFilter = filter;
+    document.querySelectorAll('#mfgFilterTabs .ftab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered = filter === 'all' ? manufacturers : manufacturers.filter(m => m.status.toLowerCase() === filter);
+    renderMfgGrid('main-mfg-grid', filtered);
+  }
+
+  function refreshAll() {
+    // stats
+    const v = manufacturers.filter(m=>m.status==='Verified').length;
+    const p = manufacturers.filter(m=>m.status==='Pending').length;
+    const r = manufacturers.filter(m=>m.status==='Rejected').length;
+    document.getElementById('st-total').textContent    = manufacturers.length;
+    document.getElementById('st-verified').textContent = v;
+    document.getElementById('st-pending').textContent  = p;
+    document.getElementById('st-rejected').textContent = r;
+    // tab counts
+    document.getElementById('fc-all').textContent      = manufacturers.length;
+    document.getElementById('fc-pending').textContent  = p;
+    document.getElementById('fc-verified').textContent = v;
+    document.getElementById('fc-rejected').textContent = r;
+    document.getElementById('pendingNavBadge').textContent = p;
+    // overview pending grid
+    renderMfgGrid('overview-pending-grid', manufacturers.filter(m=>m.status==='Pending'));
+    // main grid
+    const filtered = currentMfgFilter === 'all' ? manufacturers : manufacturers.filter(m=>m.status.toLowerCase()===currentMfgFilter);
+    renderMfgGrid('main-mfg-grid', filtered);
+    // high risk
+    renderHighRisk();
+    renderReports();
+  }
+
+  function renderHighRisk() {
+    const highRisk = manufacturers.filter(m => {
+      return m.status === 'Verified' && calcRiskScore(m) >= 70;
+    });
+    const body = document.getElementById('highRiskBody');
+    const card = document.getElementById('highRiskCard');
+    if (!highRisk.length) {
+      body.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><p>No high-risk suppliers right now 🎉</p></div>`;
+      return;
+    }
+    card.style.display = 'block';
+    body.innerHTML = `<div class="mfg-grid">${highRisk.map(mfgCardHTML).join('')}</div>`;
+  }
+
+  /* ─────────────────────────────────────
+     REPORTS TABLE
+  ───────────────────────────────────── */
+  let reportFilter = 'all';
+  let sortCol = null;
+  let sortDir = 'asc';
+
+  function renderReports() {
+    let data = [...supplierReports];
+    if (reportFilter === 'high')   data = data.filter(r => r.risk >= 70);
+    else if (reportFilter === 'medium') data = data.filter(r => r.risk >= 36 && r.risk < 70);
+    else if (reportFilter === 'low')    data = data.filter(r => r.risk < 36);
+
+    if (sortCol) {
+      data.sort((a,b) => {
+        let av = a[sortCol], bv = b[sortCol];
+        if (typeof av === 'string') av = av.toLowerCase(), bv = bv.toLowerCase();
+        return sortDir === 'asc' ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+      });
+    }
+
+    const tbody = document.getElementById('reportsTbody');
+    tbody.innerHTML = data.map(r => {
+      const rl = riskLevel(r.risk);
+      const rcClass = rl === 'low' ? 'rc-low' : rl === 'med' ? 'rc-med' : 'rc-high';
+      const sentClass = r.sentiment >= .75 ? 'sent-pos' : r.sentiment >= .55 ? 'sent-neu' : 'sent-neg';
+      const sentLabel = r.sentiment >= .75 ? '😊 Positive' : r.sentiment >= .55 ? '😐 Neutral' : '😟 Negative';
+      return `<tr>
+        <td class="supplier-cell">${r.supplier}</td>
+        <td>${r.orders.toLocaleString()}</td>
+        <td><div class="prog-wrap"><span style="min-width:32px">${r.onTime}%</span><div class="prog-bar"><div class="prog-fill prog-on" style="width:${r.onTime}%"></div></div></div></td>
+        <td><div class="prog-wrap"><span style="min-width:32px">${r.delay}%</span><div class="prog-bar"><div class="prog-fill prog-del" style="width:${r.delay}%"></div></div></div></td>
+        <td>⭐ ${r.rating.toFixed(1)}</td>
+        <td><span class="risk-chip ${rcClass}">${r.risk} — ${riskLabel(r.risk)}</span></td>
+        <td><span class="sent-chip ${sentClass}">${sentLabel} (${r.sentiment.toFixed(2)})</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function setReportFilter(f, btn) {
+    reportFilter = f;
+    document.querySelectorAll('#page-reports .ftab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderReports();
+  }
+
+  function sortReport(col) {
+    if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    else { sortCol = col; sortDir = 'asc'; }
+    document.querySelectorAll('#reportsTbl th').forEach(th => th.classList.remove('sort-asc','sort-desc'));
+    const th = document.querySelector(`#reportsTbl th[onclick="sortReport('${col}')"]`);
+    if (th) th.classList.add(`sort-${sortDir}`);
+    renderReports();
+  }
+
+  /* ─────────────────────────────────────
+     APPROVE / REJECT ACTIONS
+  ───────────────────────────────────── */
+  function quickApprove(id) {
+    const m = manufacturers.find(x => x.id === id);
+    if (!m) return;
+    m.status = 'Verified';
+    toast(`${m.companyName} approved ✓`, 'success');
+    refreshAll();
+  }
+
+  let currentModalId = null;
+
+  function openModal(id) {
+    currentModalId = id;
+    const m = manufacturers.find(x => x.id === id);
+    if (!m) return;
+    const rs = calcRiskScore(m);
+
+    document.getElementById('modalTitle').textContent = `Review: ${m.companyName}`;
+    document.getElementById('adminNotes').value = '';
+
+    // Info grid
+    document.getElementById('modalInfoGrid').innerHTML = [
+      ['Company', m.companyName],
+      ['Email', m.email],
+      ['Location', m.location],
+      ['Category', m.category],
+      ['Status', `<span class="status-pill pill-${m.status.toLowerCase()}">${m.status}</span>`],
+      ['Response Time', m.responseTime],
+    ].map(([l,v]) => `<div class="modal-info-item"><label>${l}</label><span>${v}</span></div>`).join('');
+
+    // Risk breakdown
+    const sentPct = Math.round(m.sentiment * 100);
+    const refundSafe = Math.max(0, 100 - m.refundRate * 5);
+    document.getElementById('modalRiskBreakdown').innerHTML = `
+      <h3>🔬 Risk Score Breakdown — <span style="color:${rs<=35?'var(--success)':rs<=65?'var(--warning)':'var(--danger)'};">${rs} / 100 (${riskLabel(rs)})</span></h3>
+      ${[
+        ['⭐ Customer Rating',   Math.round(m.rating/5*100), 'var(--accent)'],
+        ['💬 Sentiment Score',   sentPct, sentPct>=75?'var(--success)':sentPct>=55?'var(--warning)':'var(--danger)'],
+        ['📦 Fulfillment Rate',  m.fulfillment, m.fulfillment>=85?'var(--success)':m.fulfillment>=70?'var(--warning)':'var(--danger)'],
+        ['↩️ Refund Safety',     refundSafe, refundSafe>=80?'var(--success)':refundSafe>=60?'var(--warning)':'var(--danger)'],
+      ].map(([label,val,color]) => `
+        <div class="risk-row">
+          <span class="risk-row-label">${label}</span>
+          <div class="risk-row-bar"><div class="risk-row-fill" style="width:${val}%;background:${color}"></div></div>
+          <span class="risk-row-val" style="color:${color}">${val}%</span>
+        </div>`).join('')}`;
+
+    // Docs
+    document.getElementById('modalDocList').innerHTML = m.documents.map((d,i) => `
+      <div class="doc-item" onclick="previewDoc(${i})">
+        <div class="doc-left">
+          <div class="doc-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div>
+            <div class="doc-name">${d.type}</div>
+            <div class="doc-date">Uploaded ${d.date}</div>
+          </div>
+        </div>
+        <button class="btn btn-ghost" style="flex:0;font-size:11px;padding:5px 10px;">Preview</button>
+      </div>`).join('');
+
+    previewDoc(0);
+
+    const approved = m.status === 'Verified';
+    document.getElementById('modalApproveBtn').disabled = approved;
+    document.getElementById('modalRejectBtn').disabled  = (m.status !== 'Pending');
+
+    document.getElementById('mfgModal').classList.add('open');
+  }
+
+  function previewDoc(idx) {
+    const m = manufacturers.find(x => x.id === currentModalId);
+    if (!m || !m.documents[idx]) return;
+    const d = m.documents[idx];
+    const enc = encodeURIComponent(d.type);
+    document.getElementById('previewImg').src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='500'%3E%3Crect width='800' height='500' fill='%23f4f6fb'/%3E%3Crect x='40' y='40' width='720' height='420' rx='12' fill='white' stroke='%23e2e8f0' stroke-width='2'/%3E%3Ctext x='400' y='100' text-anchor='middle' font-family='sans-serif' font-size='22' font-weight='bold' fill='%230d1117'%3E${enc}%3C/text%3E%3Ctext x='400' y='135' text-anchor='middle' font-family='sans-serif' font-size='13' fill='%238892a4'%3EUploaded ${d.date}%3C/text%3E%3Crect x='80' y='160' width='640' height='260' rx='8' fill='%23f4f6fb'/%3E%3Ctext x='400' y='300' text-anchor='middle' font-family='sans-serif' font-size='15' fill='%238892a4'%3E[ Document Preview — Connect to file storage backend ]%3C/text%3E%3C/svg%3E`;
+  }
+
+  function closeModal() {
+    document.getElementById('mfgModal').classList.remove('open');
+    currentModalId = null;
+  }
+
+  function modalApprove() {
+    const m = manufacturers.find(x => x.id === currentModalId);
+    if (!m) return;
+    m.status = 'Verified';
+    toast(`${m.companyName} approved ✓`, 'success');
+    closeModal();
+    refreshAll();
+  }
+
+  function modalReject() {
+    const notes = document.getElementById('adminNotes').value.trim();
+    if (!notes) { toast('Please add a rejection reason before rejecting.', 'error'); return; }
+    const m = manufacturers.find(x => x.id === currentModalId);
+    if (!m) return;
+    m.status = 'Rejected';
+    m.rejectionReason = notes;
+    toast(`${m.companyName} rejected.`, 'error');
+    closeModal();
+    refreshAll();
+  }
+
+  /* ─────────────────────────────────────
+     SEARCH
+  ───────────────────────────────────── */
+  function handleSearch(query) {
+    if (!query.trim()) { refreshAll(); return; }
+    const q = query.toLowerCase();
+    const results = manufacturers.filter(m =>
+      m.companyName.toLowerCase().includes(q) ||
+      m.email.toLowerCase().includes(q) ||
+      m.category.toLowerCase().includes(q) ||
+      m.location.toLowerCase().includes(q)
+    );
+    renderMfgGrid('main-mfg-grid', results);
+    showPage('approvals');
+  }
+
+  /* ─────────────────────────────────────
+     NOTIFICATIONS
+  ───────────────────────────────────── */
+  function renderNotifs() {
+    const unread = notifications.filter(n=>n.unread).length;
+    document.getElementById('notifDot').style.display = unread ? 'block' : 'none';
+    document.getElementById('unreadCount').textContent = unread ? `${unread} unread` : 'All read';
+    document.getElementById('notifList').innerHTML = notifications.map(n => `
+      <div class="notif-item ${n.unread?'unread':''}" onclick="readNotif(${n.id})">
+        <div class="nt">${n.title}</div>
+        <div class="nm">${n.message}</div>
+        <div class="ntime">${n.time}</div>
+      </div>`).join('');
+  }
+
+  function readNotif(id) {
+    const n = notifications.find(x=>x.id===id);
+    if (n) n.unread = false;
+    renderNotifs();
+  }
+
+  function markAllRead() {
+    notifications.forEach(n => n.unread = false);
+    renderNotifs();
+  }
+
+  function toggleNotif() {
+    document.getElementById('notifPanel').classList.toggle('open');
+  }
+
+  /* ─────────────────────────────────────
+     PAGE NAVIGATION
+  ───────────────────────────────────── */
+  const pageMeta = {
+    overview:  { title: 'Overview',             sub: 'Platform health at a glance' },
+    approvals: { title: 'Manufacturer Management', sub: 'Approve, reject, and monitor manufacturers' },
+    reports:   { title: 'Performance Reports',  sub: 'Risk scores, sentiment & delivery metrics' },
+    ads:       { title: 'Ad Management',        sub: 'Review manufacturer advertisements' },
+    disputes:  { title: 'Dispute Management',   sub: 'Dropshipper complaints against manufacturers' },
+  };
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-'+id).classList.add('active');
+    document.querySelector(`.nav-item[onclick="showPage('${id}')"]`).classList.add('active');
+    const m = pageMeta[id] || {};
+    document.getElementById('pageTitle').textContent    = m.title || id;
+    document.getElementById('pageSubtitle').textContent = m.sub || '';
+  }
+
+  /* ─────────────────────────────────────
+     TOAST
+  ───────────────────────────────────── */
+  function toast(msg, type='info') {
+    const icons = {
+      success: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+      error:   '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+      info:    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    };
+    const el = document.createElement('div');
+    el.className = `toast t-${type==='error'?'error':type==='success'?'success':'info'}`;
+    el.innerHTML = `${icons[type]||icons.info} <span>${msg}</span>`;
+    document.getElementById('toastContainer').appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+
+  function logout() {
+    if (confirm('Are you sure you want to log out?')) window.location.href = 'login.html';
+  }
+
+  /* ─────────────────────────────────────
+     CLOSE DROPDOWNS ON OUTSIDE CLICK
+  ───────────────────────────────────── */
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.icon-btn') && !e.target.closest('.notif-panel')) {
+      document.getElementById('notifPanel').classList.remove('open');
+    }
+    if (e.target === document.getElementById('mfgModal')) closeModal();
+  });
+
+  /* ─────────────────────────────────────
+     INIT
+  ───────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', () => {
+    refreshAll();
+    renderNotifs();
+  });
+</script>
+</body>
+</html>

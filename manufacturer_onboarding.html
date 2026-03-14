@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup Your Account — SupplyChain AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ink:        #0d1117;
+      --ink-2:      #3d4451;
+      --ink-3:      #8892a4;
+      --surface:    #ffffff;
+      --surface-2:  #f4f6fb;
+      --surface-3:  #edf0f7;
+      --accent:     #2454ff;
+      --accent-h:   #1a3fd4;
+      --accent-g:   rgba(36,84,255,.13);
+      --success:    #00c27c;
+      --success-bg: #e6faf3;
+      --warning:    #f59e0b;
+      --warning-bg: #fef9ec;
+      --danger:     #ff4757;
+      --danger-bg:  #fff0f1;
+      --border:     #e2e8f0;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,.07);
+      --shadow:     0 4px 16px rgba(0,0,0,.08);
+      --shadow-lg:  0 12px 36px rgba(0,0,0,.13);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--surface-2);
+      color: var(--ink);
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* ═══ TOPBAR ═══ */
+    .topbar {
+      background: var(--ink);
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px;
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .brand-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .brand-icon svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; }
+
+    .brand-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px; font-weight: 700; color: white;
+    }
+
+    .brand-text span { color: var(--accent); }
+
+    .topbar-right {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .user-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 5px 12px; border-radius: 8px;
+    }
+
+    .user-chip .avatar-sm {
+      width: 24px; height: 24px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 10px; font-weight: 700; color: white;
+    }
+
+    .user-chip span { font-size: 12px; color: rgba(255,255,255,.7); font-weight: 500; }
+
+    .logout-link {
+      font-size: 12px; color: rgba(255,255,255,.4);
+      cursor: pointer; background: none; border: none;
+      transition: color .2s;
+    }
+
+    .logout-link:hover { color: var(--danger); }
+
+    /* ═══ HERO SECTION ═══ */
+    .hero {
+      background: var(--ink);
+      padding: 36px 32px 0;
+      position: relative; overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(36,84,255,.2) 0%, transparent 70%);
+      top: -150px; right: -100px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 860px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(36,84,255,.2);
+      color: #93bbff;
+      font-size: 11px; font-weight: 600;
+      padding: 4px 10px; border-radius: 20px;
+      letter-spacing: .4px; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 30px; font-weight: 800;
+      color: white; letter-spacing: -1px;
+      margin-bottom: 8px; line-height: 1.15;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero p {
+      font-size: 14px; color: rgba(255,255,255,.5);
+      max-width: 500px; line-height: 1.65; margin-bottom: 32px;
+    }
+
+    /* ═══ PROGRESS STEPPER ═══ */
+    .stepper-wrap {
+      display: flex; align-items: flex-end; gap: 0;
+      position: relative;
+    }
+
+    .step-tab {
+      flex: 1;
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px 20px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      cursor: pointer;
+      transition: background .2s;
+      position: relative;
+      margin-right: 4px;
+    }
+
+    .step-tab:last-child { margin-right: 0; }
+
+    .step-tab:hover { background: rgba(255,255,255,.07); }
+
+    .step-tab.active {
+      background: var(--surface-2);
+      border-color: var(--border);
+      border-bottom: none;
+      z-index: 2;
+    }
+
+    .step-tab.done {
+      background: rgba(0,194,124,.08);
+      border-color: rgba(0,194,124,.2);
+    }
+
+    .step-num {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 700;
+      flex-shrink: 0;
+      transition: all .3s;
+    }
+
+    .step-tab:not(.active):not(.done) .step-num {
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.4);
+      border: 2px solid rgba(255,255,255,.1);
+    }
+
+    .step-tab.active .step-num {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 0 0 4px var(--accent-g);
+    }
+
+    .step-tab.done .step-num {
+      background: var(--success);
+      color: white;
+    }
+
+    .step-info { min-width: 0; }
+
+    .step-label {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .5px;
+      margin-bottom: 2px;
+    }
+
+    .step-tab:not(.active):not(.done) .step-label { color: rgba(255,255,255,.35); }
+    .step-tab.active .step-label { color: var(--ink-3); }
+    .step-tab.done   .step-label { color: var(--success); }
+
+    .step-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .step-tab:not(.active):not(.done) .step-name { color: rgba(255,255,255,.5); }
+    .step-tab.active .step-name { color: var(--ink); }
+    .step-tab.done   .step-name { color: #059669; }
+
+    .step-check {
+      margin-left: auto;
+      font-size: 16px;
+    }
+
+    /* ═══ MAIN CONTENT ═══ */
+    .main-wrap {
+      max-width: 860px; margin: 0 auto;
+      padding: 24px 32px 60px;
+    }
+
+    /* step panels */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; animation: fadeUp .3s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══ CARD ═══ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px; border-bottom: 1px solid var(--border);
+    }
+
+    .card-head h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px; font-weight: 700; color: var(--ink);
+    }
+
+    .card-head p { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+    .card-body { padding: 22px; }
+
+    /* ═══ TIPS STRIP ═══ */
+    .tips-strip {
+      background: rgba(36,84,255,.06);
+      border: 1px solid rgba(36,84,255,.15);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tips-strip .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .tips-strip p { font-size: 12px; color: var(--ink-2); line-height: 1.55; }
+    .tips-strip strong { color: var(--accent); }
+
+    /* ═══ FORM ═══ */
+    .form-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+    }
+
+    .form-grid .span-2 { grid-column: span 2; }
+
+    .form-group { display: flex; flex-direction: column; }
+    .form-group.req > label::after { content: ' *'; color: var(--danger); }
+
+    .form-group label {
+      font-size: 12px; font-weight: 600;
+      color: var(--ink-2); margin-bottom: 7px;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-wrap .ico {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      width: 15px; height: 15px;
+      stroke: var(--ink-3); fill: none; stroke-width: 1.8;
+      pointer-events: none;
+    }
+
+    .form-group textarea ~ .ico { top: 14px; transform: none; }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 0 13px 0 38px; height: 44px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: var(--ink);
+      background: var(--surface-2); border: 1.5px solid var(--border);
+      border-radius: 10px; outline: none;
+      transition: all .2s; appearance: none;
+    }
+
+    .form-group textarea {
+      height: auto; min-height: 88px;
+      padding: 11px 13px 11px 38px;
+      resize: vertical; line-height: 1.5;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      background: white; border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-g);
+    }
+
+    .form-group input.err-field,
+    .form-group select.err-field,
+    .form-group textarea.err-field { border-color: var(--danger); background: #fff8f8; }
+
+    .form-group input.ok-field  { border-color: var(--success); }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--ink-3); }
+
+    .field-err {
+      font-size: 11px; color: var(--danger);
+      margin-top: 5px; display: none; align-items: center; gap: 4px;
+    }
+
+    .field-err.show { display: flex; }
+    .field-err svg  { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2.5; flex-shrink: 0; }
+
+    .char-c { font-size: 11px; color: var(--ink-3); text-align: right; margin-top: 4px; }
+    .char-c.warn { color: var(--warning); }
+    .char-c.over { color: var(--danger); font-weight: 600; }
+
+    /* ═══ PROGRESS BAR (profile completion) ═══ */
+    .completion-bar-wrap {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+
+    .cb-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .cb-label { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+    .cb-pct   { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--accent); }
+
+    .cb-bar { height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .cb-fill {
+      height: 100%; background: var(--accent); border-radius: 4px;
+      transition: width .4s ease;
+    }
+
+    .cb-hint { font-size: 11px; color: var(--ink-3); margin-top: 6px; }
+
+    /* ═══ DOCUMENT SLOTS ═══ */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px; margin-bottom: 20px;
+    }
+
+    .doc-slot-label {
+      font-size: 12px; font-weight: 600; color: var(--ink-2);
+      margin-bottom: 8px; display: flex; align-items: center; gap: 5px;
+    }
+
+    .doc-slot-label .req-dot { color: var(--danger); }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px; padding: 20px 12px;
+      text-align: center; cursor: pointer;
+      transition: all .2s; background: var(--surface-2);
+      position: relative;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over { border-color: var(--accent); background: var(--accent-g); }
+
+    .drop-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+      width: 100%; height: 100%; padding: 0;
+    }
+
+    .drop-zone .dz-ic    { font-size: 24px; margin-bottom: 6px; }
+    .drop-zone .dz-t     { font-size: 12px; font-weight: 600; color: var(--ink-2); margin-bottom: 2px; }
+    .drop-zone .dz-s     { font-size: 11px; color: var(--ink-3); }
+    .drop-zone .dz-lim   { font-size: 10px; color: var(--ink-3); margin-top: 4px; }
+
+    .drop-zone.has-file  { border-color: var(--success); background: var(--success-bg); }
+    .drop-zone.has-file  .dz-t { color: var(--success); }
+    .drop-zone.file-err  { border-color: var(--danger);  background: var(--danger-bg); }
+    .drop-zone.file-err  .dz-t { color: var(--danger); }
+
+    /* ═══ REQUIREMENT CHECKLIST (doc page) ═══ */
+    .req-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+
+    .req-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px; background: var(--surface-2);
+      font-size: 13px; transition: all .2s;
+    }
+
+    .req-item.complete { border-color: var(--success); background: var(--success-bg); }
+
+    .req-icon {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+      background: var(--surface-3);
+      transition: all .2s;
+    }
+
+    .req-item.complete .req-icon { background: var(--success); }
+
+    .req-text { flex: 1; }
+    .req-name { font-weight: 600; color: var(--ink); }
+    .req-sub  { font-size: 11px; color: var(--ink-3); margin-top: 1px; }
+
+    .req-badge {
+      font-size: 10px; font-weight: 700; padding: 3px 8px;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: .4px;
+    }
+
+    .req-item:not(.complete) .req-badge { background: var(--warning-bg); color: #92400e; }
+    .req-item.complete        .req-badge { background: var(--success-bg); color: var(--success); }
+
+    /* ═══ WAITING ROOM (Step 3) ═══ */
+    .waiting-card {
+      background: var(--ink);
+      border-radius: 16px; padding: 40px;
+      text-align: center; position: relative; overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .waiting-card::before {
+      content: '';
+      position: absolute; width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(36,84,255,.25) 0%, transparent 70%);
+      top: -100px; left: 50%; transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .waiting-card .wc-inner { position: relative; z-index: 1; }
+
+    .pulse-ring {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      position: relative;
+      animation: pulseGrow 2s infinite;
+      font-size: 32px;
+    }
+
+    .pulse-ring::before,
+    .pulse-ring::after {
+      content: '';
+      position: absolute; inset: -8px;
+      border-radius: 50%;
+      border: 2px solid rgba(36,84,255,.4);
+      animation: pulseOut 2s infinite;
+    }
+
+    .pulse-ring::after { animation-delay: .5s; inset: -18px; }
+
+    @keyframes pulseGrow {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.05); }
+    }
+
+    @keyframes pulseOut {
+      0%   { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.5); }
+    }
+
+    .waiting-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px; font-weight: 800;
+      color: white; margin-bottom: 10px; letter-spacing: -.5px;
+    }
+
+    .waiting-card p {
+      font-size: 14px; color: rgba(255,255,255,.55);
+      line-height: 1.65; max-width: 460px; margin: 0 auto 28px;
+    }
+
+    .timeline-steps {
+      display: flex; justify-content: center; gap: 0;
+      position: relative; max-width: 500px; margin: 0 auto;
+    }
+
+    .timeline-steps::before {
+      content: ''; position: absolute;
+      top: 16px; left: 10%; right: 10%;
+      height: 2px; background: rgba(255,255,255,.1); z-index: 0;
+    }
+
+    .tl-step { flex: 1; text-align: center; position: relative; z-index: 1; }
+
+    .tl-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      margin: 0 auto 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700;
+      transition: all .3s;
+    }
+
+    .tl-step.done   .tl-dot { background: var(--success); color: white; }
+    .tl-step.active .tl-dot { background: var(--accent);  color: white; box-shadow: 0 0 0 4px rgba(36,84,255,.3); }
+    .tl-step.todo   .tl-dot { background: rgba(255,255,255,.1); color: rgba(255,255,255,.4); border: 2px solid rgba(255,255,255,.1); }
+
+    .tl-step .tl-lbl {
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px;
+    }
+
+    .tl-step.done   .tl-lbl { color: var(--success); }
+    .tl-step.active .tl-lbl { color: rgba(255,255,255,.8); }
+    .tl-step.todo   .tl-lbl { color: rgba(255,255,255,.3); }
+
+    /* ═══ LOCKED FEATURES ═══ */
+    .locked-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    }
+
+    .locked-card {
+      border: 1.5px dashed var(--border);
+      border-radius: 12px; padding: 20px;
+      background: var(--surface);
+      position: relative; overflow: hidden;
+    }
+
+    .locked-card::after {
+      content: '🔒';
+      position: absolute; top: 12px; right: 14px;
+      font-size: 16px; opacity: .5;
+    }
+
+    .locked-card .lc-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--surface-2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 12px;
+    }
+
+    .locked-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 700; color: var(--ink-3);
+      margin-bottom: 6px;
+    }
+
+    .locked-card p { font-size: 12px; color: var(--ink-3); line-height: 1.55; }
+
+    .locked-card .unlock-hint {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--success-bg); color: var(--success);
+      font-size: 11px; font-weight: 600;
+      padding: 4px 9px; border-radius: 6px; margin-top: 10px;
+    }
+
+    /* ═══ WHAT HAPPENS NEXT ═══ */
+    .next-steps {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+    }
+
+    .next-step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px; text-align: center;
+    }
+
+    .next-step-card .ns-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent-g); color: var(--accent);
+      font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+    }
+
+    .next-step-card .ns-icon { font-size: 22px; margin-bottom: 8px; }
+    .next-step-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 700; color: var(--ink);
+      margin-bottom: 5px;
+    }
+    .next-step-card p { font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+
+    /* ═══ BUTTONS ═══ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 22px; border: none; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+
+    .btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent-h); transform: translateY(-1px); box-shadow: 0 4px 14px var(--accent-g); }
+
+    .btn-success { background: var(--success); color: white; }
+    .btn-success:hover { background: #009960; }
+
+    .btn-ghost { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--surface-3); }
+
+    .btn-lg { padding: 13px 28px; font-size: 15px; border-radius: 12px; }
+
+    .btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+    /* bottom nav row */
+    .nav-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 20px; border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+
+    .nav-row .progress-hint {
+      font-size: 12px; color: var(--ink-3);
+    }
+
+    /* ═══ TOAST ═══ */
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+
+    .toast {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px; border-radius: 10px; box-shadow: var(--shadow);
+      font-size: 13px; font-weight: 500; min-width: 260px;
+      animation: slideInR .3s ease;
+    }
+
+    @keyframes slideInR { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .toast svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; flex-shrink: 0; }
+    .toast.t-success { background: var(--success-bg); color: var(--success); border: 1px solid #a7f0d1; }
+    .toast.t-error   { background: var(--danger-bg);  color: var(--danger);  border: 1px solid #ffc0c8; }
+    .toast.t-info    { background: var(--accent-g);   color: var(--accent);  border: 1px solid rgba(36,84,255,.2); }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 768px) {
+      .main-wrap { padding: 16px 16px 50px; }
+      .hero { padding: 24px 16px 0; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .span-2 { grid-column: span 1; }
+      .locked-grid { grid-template-columns: 1fr; }
+      .next-steps  { grid-template-columns: 1fr; }
+      .stepper-wrap { overflow-x: auto; }
+      .step-tab { min-width: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </div>
+    <span class="brand-text">Supply<span>Chain</span> AI</span>
+  </div>
+  <div class="topbar-right">
+    <div class="user-chip">
+      <div class="avatar-sm">TC</div>
+      <span>TechSupply Co.</span>
+    </div>
+    <button class="logout-link" onclick="if(confirm('Logout?')) window.location.href='login.html'">Logout</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">New Account Setup</div>
+    <h1>Welcome to <span>SupplyChain AI</span> 👋</h1>
+    <p>Complete the 3 steps below to get your manufacturer account verified and start receiving orders from dropshippers.</p>
+
+    <!-- STEPPER -->
+    <div class="stepper-wrap">
+      <div class="step-tab active" id="tab-1" onclick="goToStep(1)">
+        <div class="step-num" id="snum-1">1</div>
+        <div class="step-info">
+          <div class="step-label">Step 1</div>
+          <div class="step-name">Company Profile</div>
+        </div>
+        <div class="step-check" id="scheck-1"></div>
+      </div>
+
+      <div class="step-tab" id="tab-2" onclick="goToStep(2)">
+        <div class="step-num" id="snum-2">2</div>
+        <div class="step-info">
+          <div class="step-label">Step 2</div>
+          <div class="step-name">Upload Documents</div>
+        </div>
+        <div class="step-check" id="scheck-2"></div>
+      </div>
+
+      <div class="step-tab" id="tab-3" onclick="goToStep(3)">
+        <div class="step-num" id="snum-3">3</div>
+        <div class="step-info">
+          <div class="step-label">Step 3</div>
+          <div class="step-name">Awaiting Approval</div>
+        </div>
+        <div class="step-check" id="scheck-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrap">
+
+  <!-- ══════════ STEP 1: PROFILE ══════════ -->
+  <div class="step-panel active" id="panel-1">
+
+    <!-- completion bar -->
+    <div class="completion-bar-wrap">
+      <div class="cb-top">
+        <span class="cb-label">Profile Completion</span>
+        <span class="cb-pct" id="completionPct">0%</span>
+      </div>
+      <div class="cb-bar"><div class="cb-fill" id="completionFill" style="width:0%"></div></div>
+      <div class="cb-hint" id="completionHint">Fill all required fields to proceed to Step 2</div>
+    </div>
+
+    <div class="tips-strip">
+      <span class="tip-icon">💡</span>
+      <p>Admin will review these details carefully. Use your <strong>registered business name</strong>, a <strong>valid GST number</strong>, and your <strong>real factory address</strong>. Incomplete or incorrect information will delay approval.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Company Information</h2>
+          <p>Basic details about your business — fields marked * are mandatory</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form id="profileForm" novalidate>
+          <div class="form-grid" style="margin-bottom:18px;">
+
+            <div class="form-group req">
+              <label>Owner / Contact Person Name</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <input type="text" id="f-name" placeholder="Your full name" />
+              </div>
+              <div class="field-err" id="e-name"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Minimum 3 characters required</div>
+            </div>
+
+            <div class="form-group req">
+              <label>Registered Business Name</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <input type="text" id="f-biz" placeholder="As on your business certificate" />
+              </div>
+              <div class="field-err" id="e-biz"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Business name is required</div>
+            </div>
+
+            <div class="form-group req">
+              <label>Mobile Number</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 5.5 5.5l.96-.96a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <input type="tel" id="f-phone" placeholder="10-digit mobile" maxlength="10" />
+              </div>
+              <div class="field-err" id="e-phone"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Enter a valid 10-digit Indian mobile number (starts with 6–9)</div>
+            </div>
+
+            <div class="form-group req">
+              <label>Business Email</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <input type="email" id="f-email" placeholder="official@yourbusiness.com" />
+              </div>
+              <div class="field-err" id="e-email"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Enter a valid email address</div>
+            </div>
+
+            <div class="form-group req">
+              <label>Product Category</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+                <select id="f-cat" style="padding-left:38px;">
+                  <option value="">Select a category…</option>
+                  <option>Electronics</option>
+                  <option>Textiles &amp; Apparel</option>
+                  <option>Home Decor</option>
+                  <option>Automotive Parts</option>
+                  <option>Packaging</option>
+                  <option>Pharmaceuticals</option>
+                  <option>Food &amp; Beverage</option>
+                  <option>Machinery</option>
+                  <option>Chemicals</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field-err" id="e-cat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Please select a product category</div>
+            </div>
+
+            <div class="form-group req">
+              <label>GST Number</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <input type="text" id="f-gst" placeholder="22ABCDE1234F1Z5" maxlength="15" style="text-transform:uppercase;letter-spacing:.5px;" />
+              </div>
+              <div class="field-err" id="e-gst"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Must be a valid 15-character GST number (e.g. 22ABCDE1234F1Z5)</div>
+            </div>
+
+            <div class="form-group req span-2">
+              <label>Factory / Office Address</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <textarea id="f-addr" placeholder="Full address including street, city, state and PIN code" rows="3"></textarea>
+              </div>
+              <div class="field-err" id="e-addr"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Address must be at least 20 characters — include city, state, and PIN</div>
+            </div>
+
+            <div class="form-group req">
+              <label>Min. Order Quantity (MOQ)</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <input type="number" id="f-moq" placeholder="e.g. 50" min="1" max="100000" />
+              </div>
+              <div class="field-err" id="e-moq"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Must be a number between 1 and 100,000</div>
+            </div>
+
+            <div class="form-group req">
+              <label>Average Lead Time (days)</label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <input type="number" id="f-lead" placeholder="e.g. 7" min="1" max="365" />
+              </div>
+              <div class="field-err" id="e-lead"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Lead time must be between 1 and 365 days</div>
+            </div>
+
+            <div class="form-group span-2">
+              <label>Company Description <span style="color:var(--ink-3);font-weight:400;font-size:11px;">(optional — helps dropshippers find you)</span></label>
+              <div class="input-wrap">
+                <svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                <textarea id="f-desc" placeholder="What do you manufacture? What are your strengths? Any certifications or specialisations?" rows="3" maxlength="500" oninput="charCount(this,'cnt-desc',500)"></textarea>
+              </div>
+              <div class="char-c" id="cnt-desc">0 / 500</div>
+            </div>
+
+          </div>
+
+          <div class="nav-row">
+            <span class="progress-hint" id="navHint">Complete all required fields (*) to continue</span>
+            <button type="button" class="btn btn-primary btn-lg" onclick="saveProfile()">
+              Save &amp; Continue
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ STEP 2: DOCUMENTS ══════════ -->
+  <div class="step-panel" id="panel-2">
+
+    <div class="tips-strip">
+      <span class="tip-icon">📋</span>
+      <p>Upload clear, readable scans or photos. <strong>PDF preferred</strong>. Max 5 MB per file. The 3 marked with a red dot are <strong>mandatory</strong> — admin cannot approve your account without them.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-head">
+        <div>
+          <h2>Document Checklist</h2>
+          <p>Track which required documents you've uploaded</p>
+        </div>
+        <span id="docProgress" style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink-3);">0 / 3 required</span>
+      </div>
+      <div class="card-body">
+        <div class="req-list" id="reqList">
+          <div class="req-item" id="ri-business_license">
+            <div class="req-icon">📄</div>
+            <div class="req-text">
+              <div class="req-name">Business License / Registration</div>
+              <div class="req-sub">Certificate of incorporation or Shops & Establishment Act</div>
+            </div>
+            <span class="req-badge">Required</span>
+          </div>
+          <div class="req-item" id="ri-factory_cert">
+            <div class="req-icon">🏭</div>
+            <div class="req-text">
+              <div class="req-name">Factory / Trade License</div>
+              <div class="req-sub">Government-issued manufacturing or trade permit</div>
+            </div>
+            <span class="req-badge">Required</span>
+          </div>
+          <div class="req-item" id="ri-gst_cert">
+            <div class="req-icon">🧾</div>
+            <div class="req-text">
+              <div class="req-name">GST Registration Certificate</div>
+              <div class="req-sub">Must match the GST number you entered in your profile</div>
+            </div>
+            <span class="req-badge">Required</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Upload Documents</h2>
+          <p>Drag and drop or click each slot to upload</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="doc-grid" id="docGrid"></div>
+
+        <div class="nav-row">
+          <button class="btn btn-ghost" onclick="goToStep(1)">
+            <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </button>
+          <button class="btn btn-primary btn-lg" id="submitDocsBtn" onclick="submitDocuments()">
+            Submit for Review
+            <svg viewBox="0 0 24 24"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════ STEP 3: WAITING ══════════ -->
+  <div class="step-panel" id="panel-3">
+
+    <!-- Animated waiting card -->
+    <div class="waiting-card">
+      <div class="wc-inner">
+        <div class="pulse-ring">🔍</div>
+        <h2>Your application is under review</h2>
+        <p>Our admin team is verifying your documents and company details. You'll receive an email notification once a decision is made. This typically takes <strong style="color:rgba(255,255,255,.8);">1–3 business days</strong>.</p>
+
+        <div class="timeline-steps">
+          <div class="tl-step done">
+            <div class="tl-dot">✓</div>
+            <div class="tl-lbl">Profile</div>
+          </div>
+          <div class="tl-step done">
+            <div class="tl-dot">✓</div>
+            <div class="tl-lbl">Documents</div>
+          </div>
+          <div class="tl-step active">
+            <div class="tl-dot">⋯</div>
+            <div class="tl-lbl">Admin Review</div>
+          </div>
+          <div class="tl-step todo">
+            <div class="tl-dot">4</div>
+            <div class="tl-lbl">Approved!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- What's locked -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>🔒 Features Locked Until Approval</h2>
+          <p>These features will automatically unlock once admin approves your account</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="locked-grid">
+          <div class="locked-card">
+            <div class="lc-icon">📦</div>
+            <h3>Order Management</h3>
+            <p>You'll receive orders from dropshippers here. Accept, pack, ship, and mark deliveries as complete.</p>
+            <div class="unlock-hint">✓ Unlocks after approval</div>
+          </div>
+          <div class="locked-card">
+            <div class="lc-icon">🔍</div>
+            <h3>Search Visibility</h3>
+            <p>Dropshippers searching for your product category will find your profile and be able to place orders.</p>
+            <div class="unlock-hint">✓ Unlocks after approval</div>
+          </div>
+          <div class="locked-card">
+            <div class="lc-icon">📢</div>
+            <h3>Advertisements</h3>
+            <p>Create and run ads on the platform to attract more dropshippers to your products.</p>
+            <div class="unlock-hint">✓ Unlocks after approval</div>
+          </div>
+          <div class="locked-card">
+            <div class="lc-icon">⭐</div>
+            <h3>Ratings &amp; Reviews</h3>
+            <p>After your first deliveries, dropshippers will leave verified reviews that build your reputation score.</p>
+            <div class="unlock-hint">✓ Unlocks after approval</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- What happens next -->
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>What Happens After Approval?</h2>
+          <p>Here's what your journey looks like once approved</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="next-steps">
+          <div class="next-step-card">
+            <div class="ns-num">1</div>
+            <div class="ns-icon">🔔</div>
+            <h4>You Get Notified</h4>
+            <p>An email is sent to your registered address. Your dashboard status changes to "Verified".</p>
+          </div>
+          <div class="next-step-card">
+            <div class="ns-num">2</div>
+            <div class="ns-icon">🛒</div>
+            <h4>Dropshippers Find You</h4>
+            <p>Your profile appears in search results. Dropshippers can view your products and place orders.</p>
+          </div>
+          <div class="next-step-card">
+            <div class="ns-num">3</div>
+            <div class="ns-icon">📦</div>
+            <h4>Fulfill &amp; Build Reputation</h4>
+            <p>Each delivered order earns you a verified review. Higher ratings = more visibility in search.</p>
+          </div>
+        </div>
+
+        <!-- while you wait tips -->
+        <div style="background:var(--surface-2);border-radius:12px;padding:16px 18px;margin-top:16px;">
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;">💡 While You Wait — Things You Can Do Now</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);">
+              <span style="width:22px;height:22px;background:var(--accent-g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);font-weight:700;flex-shrink:0;">✓</span>
+              <span>Review your profile details and make sure everything is accurate</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);">
+              <span style="width:22px;height:22px;background:var(--accent-g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);font-weight:700;flex-shrink:0;">✓</span>
+              <span>Prepare your product catalog and pricing — you'll add these after approval</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);">
+              <span style="width:22px;height:22px;background:var(--accent-g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);font-weight:700;flex-shrink:0;">✓</span>
+              <span>Make sure your email inbox is active — admin may ask for additional documents</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);">
+              <span style="width:22px;height:22px;background:var(--accent-g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);font-weight:700;flex-shrink:0;">✓</span>
+              <span>Think about your ad copy — you can create ads the moment you're approved</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+          <button class="btn btn-ghost" onclick="goToStep(1)">Edit Profile</button>
+          <button class="btn btn-ghost" onclick="goToStep(2)">Edit Documents</button>
+          <!-- DEV ONLY: simulate approval -->
+          <button class="btn btn-success" onclick="simulateApproval()" title="Dev only — simulates admin clicking Approve">
+            🎉 Simulate Approval (Dev)
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /main-wrap -->
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ════════════════════════════════════
+   STATE
+════════════════════════════════════ */
+let currentStep = 1;
+let profileDone  = false;
+let documentsDone = false;
+
+const docSlots = [
+  { key: 'business_license', label: 'Business License',        required: true  },
+  { key: 'factory_cert',     label: 'Factory / Trade License', required: true  },
+  { key: 'gst_cert',         label: 'GST Certificate',         required: true  },
+  { key: 'iso_cert',         label: 'ISO / Quality Certificate', required: false },
+  { key: 'insurance',        label: 'Insurance Document',      required: false },
+];
+
+const uploadedDocs = {};
+
+/* ════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════ */
+function goToStep(n) {
+  // Can only go back freely; going forward requires completion
+  if (n > 1 && !profileDone  && n >= 2) { toast('Please save your profile first.', 'error'); return; }
+  if (n > 2 && !documentsDone && n >= 3) { toast('Please submit your documents first.', 'error'); return; }
+
+  currentStep = n;
+
+  document.querySelectorAll('.step-panel').forEach((p,i) => {
+    p.classList.toggle('active', i+1 === n);
+  });
+
+  document.querySelectorAll('.step-tab').forEach((t,i) => {
+    t.classList.remove('active');
+    if (i+1 === n) t.classList.add('active');
+  });
+}
+
+function markStepDone(n) {
+  const tab   = document.getElementById('tab-' + n);
+  const snum  = document.getElementById('snum-' + n);
+  const check = document.getElementById('scheck-' + n);
+  tab.classList.remove('active');
+  tab.classList.add('done');
+  snum.textContent  = '✓';
+  check.textContent = '✅';
+}
+
+/* ════════════════════════════════════
+   PROFILE FORM — VALIDATION
+════════════════════════════════════ */
+const validators = {
+  'f-name':  v => v.trim().length >= 3,
+  'f-biz':   v => v.trim().length >= 2,
+  'f-phone': v => /^[6-9]\d{9}$/.test(v.trim()),
+  'f-email': v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+  'f-cat':   v => v !== '',
+  'f-gst':   v => /^[A-Z0-9]{15}$/i.test(v.trim()),   // 15 alphanumeric — relaxed for real-world input
+  'f-addr':  v => v.trim().length >= 20,
+  'f-moq':   v => v !== '' && +v >= 1 && +v <= 100000,
+  'f-lead':  v => v !== '' && +v >= 1 && +v <= 365,
+};
+
+const requiredFields = ['f-name','f-biz','f-phone','f-email','f-cat','f-gst','f-addr','f-moq','f-lead'];
+
+function vField(id) {
+  const el  = document.getElementById(id);
+  const err = document.getElementById('e-' + id.slice(2));
+  if (!el || !err) return true;
+  const ok = validators[id](el.value);
+  el.classList.toggle('err-field', !ok);
+  el.classList.toggle('ok-field',   ok);
+  err.classList.toggle('show', !ok);
+  return ok;
+}
+
+// Live validation
+requiredFields.forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('blur',  () => { vField(id); updateCompletion(); });
+  el.addEventListener('input', () => {
+    if (el.classList.contains('err-field')) vField(id);
+    updateCompletion();
+  });
+});
+
+// Completion meter
+function updateCompletion() {
+  const filled = requiredFields.filter(id => {
+    const el = document.getElementById(id);
+    return el && validators[id] && validators[id](el.value);
+  }).length;
+  const pct = Math.round((filled / requiredFields.length) * 100);
+  document.getElementById('completionFill').style.width = pct + '%';
+  document.getElementById('completionPct').textContent  = pct + '%';
+
+  const hints = [
+    'Fill all required fields to continue',
+    'Good start! Keep going…',
+    'Almost there!',
+    'Looking good!',
+    '✓ All required fields complete!',
+  ];
+
+  const hintIdx = Math.min(Math.floor(pct / 25), 4);
+  document.getElementById('completionHint').textContent = hints[hintIdx];
+
+  // Color the fill bar
+  const fill = document.getElementById('completionFill');
+  fill.style.background = pct < 40 ? 'var(--danger)' : pct < 75 ? 'var(--warning)' : 'var(--success)';
+  document.getElementById('completionPct').style.color = fill.style.background;
+}
+
+function saveProfile() {
+  // Run all validators and collect failed field names
+  const failed = requiredFields.filter(id => !vField(id));
+
+  if (failed.length > 0) {
+    // Build a human-readable list of what's wrong
+    const labels = {
+      'f-name':  'Owner Name',
+      'f-biz':   'Business Name',
+      'f-phone': 'Phone Number',
+      'f-email': 'Email',
+      'f-cat':   'Product Category',
+      'f-gst':   'GST Number',
+      'f-addr':  'Address',
+      'f-moq':   'Min. Order Quantity',
+      'f-lead':  'Lead Time',
+    };
+    const names = failed.map(id => labels[id] || id).join(', ');
+    toast(`Please fix: ${names}`, 'error');
+    // Scroll to the first broken field
+    const firstEl = document.getElementById(failed[0]);
+    if (firstEl) firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Update hint text
+    document.getElementById('navHint').textContent = `${failed.length} field${failed.length > 1 ? 's' : ''} need attention`;
+    document.getElementById('navHint').style.color = 'var(--danger)';
+    return;
+  }
+
+  profileDone = true;
+  markStepDone(1);
+
+  // Persist profile values so Step 2 submission can read them
+  localStorage.setItem('sc_reg_profile', JSON.stringify({
+    name:     document.getElementById('f-name').value.trim(),
+    biz:      document.getElementById('f-biz').value.trim(),
+    phone:    document.getElementById('f-phone').value.trim(),
+    email:    document.getElementById('f-email').value.trim(),
+    cat:      document.getElementById('f-cat').value,
+    gst:      document.getElementById('f-gst').value.trim(),
+    addr:     document.getElementById('f-addr').value.trim(),
+    moq:      document.getElementById('f-moq').value,
+    leadTime: document.getElementById('f-lead').value,
+    desc:     document.getElementById('f-desc').value.trim(),
+  }));
+
+  document.getElementById('navHint').textContent = '✓ Profile saved';
+  document.getElementById('navHint').style.color = 'var(--success)';
+  toast('Profile saved ✓  Now upload your documents.', 'success');
+  goToStep(2);
+  initDocGrid();
+}
+
+/* ════════════════════════════════════
+   CHAR COUNTER
+════════════════════════════════════ */
+function charCount(el, id, max) {
+  const n = el.value.length;
+  const c = document.getElementById(id);
+  c.textContent = `${n} / ${max}`;
+  c.className = 'char-c' + (n >= max ? ' over' : n > max*.9 ? ' warn' : '');
+}
+
+/* ════════════════════════════════════
+   DOCUMENT UPLOAD
+════════════════════════════════════ */
+function initDocGrid() {
+  const grid = document.getElementById('docGrid');
+  grid.innerHTML = docSlots.map(s => `
+    <div>
+      <div class="doc-slot-label">
+        ${s.label}
+        ${s.required ? '<span class="req-dot">●</span>' : '<span style="font-size:10px;color:var(--ink-3);font-weight:400;">(optional)</span>'}
+      </div>
+      <div class="drop-zone ${uploadedDocs[s.key] ? 'has-file' : ''}"
+           id="dz-${s.key}"
+           ondragover="dzOver(event,this)"
+           ondragleave="dzLeave(this)"
+           ondrop="dzDrop(event,'${s.key}',this)">
+        <input type="file" accept=".pdf,.doc,.docx"
+               onchange="handleFile(this,'${s.key}',document.getElementById('dz-${s.key}'))" />
+        <div class="dz-ic">${uploadedDocs[s.key] ? '✅' : '📄'}</div>
+        <div class="dz-t">${uploadedDocs[s.key] ? uploadedDocs[s.key].name : 'Drop or click to upload'}</div>
+        <div class="dz-s">${uploadedDocs[s.key] ? (uploadedDocs[s.key].size/1024).toFixed(0)+' KB' : 'PDF, DOC, DOCX'}</div>
+        <div class="dz-lim">Max 5 MB</div>
+      </div>
+    </div>`).join('');
+}
+
+function handleFile(input, key, zone) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const allowed = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ];
+
+  // Validate type
+  if (!allowed.includes(file.type)) {
+    zone.className = 'drop-zone file-err';
+    zone.querySelector('.dz-ic').textContent = '❌';
+    zone.querySelector('.dz-t').textContent  = 'Invalid file type';
+    zone.querySelector('.dz-s').textContent  = 'Only PDF, DOC, DOCX allowed';
+    toast(`"${file.name}" is not a valid file type. Upload PDF or DOCX only.`, 'error');
+    return;
+  }
+
+  // Validate size (5 MB)
+  if (file.size > 5 * 1024 * 1024) {
+    zone.className = 'drop-zone file-err';
+    zone.querySelector('.dz-ic').textContent = '❌';
+    zone.querySelector('.dz-t').textContent  = 'File too large';
+    zone.querySelector('.dz-s').textContent  = `${(file.size/1024/1024).toFixed(1)} MB — max is 5 MB`;
+    toast(`File is ${(file.size/1024/1024).toFixed(1)} MB. Maximum allowed size is 5 MB.`, 'error');
+    return;
+  }
+
+  // Success
+  uploadedDocs[key] = { name: file.name, size: file.size };
+  zone.className = 'drop-zone has-file';
+  zone.querySelector('.dz-ic').textContent = '✅';
+  zone.querySelector('.dz-t').textContent  = file.name;
+  zone.querySelector('.dz-s').textContent  = `${(file.size/1024).toFixed(0)} KB — click to replace`;
+  toast(`"${file.name}" uploaded ✓`, 'success');
+  updateDocChecklist();
+}
+
+function dzOver(e, zone)  { e.preventDefault(); zone.classList.add('drag-over'); }
+function dzLeave(zone)    { zone.classList.remove('drag-over'); }
+function dzDrop(e, key, zone) {
+  e.preventDefault(); zone.classList.remove('drag-over');
+  handleFile({ files: e.dataTransfer.files }, key, zone);
+}
+
+function updateDocChecklist() {
+  const requiredKeys = docSlots.filter(s => s.required).map(s => s.key);
+  let done = 0;
+  requiredKeys.forEach(key => {
+    const item = document.getElementById('ri-' + key);
+    if (uploadedDocs[key]) {
+      done++;
+      if (item) {
+        item.classList.add('complete');
+        item.querySelector('.req-badge').textContent = '✓ Uploaded';
+        item.querySelector('.req-icon').textContent  = '✅';
+      }
+    } else {
+      if (item) {
+        item.classList.remove('complete');
+        item.querySelector('.req-badge').textContent = 'Required';
+      }
+    }
+  });
+  document.getElementById('docProgress').textContent = `${done} / ${requiredKeys.length} required`;
+  document.getElementById('docProgress').style.color = done === requiredKeys.length ? 'var(--success)' : 'var(--ink-3)';
+}
+
+function submitDocuments() {
+  const missing = docSlots.filter(s => s.required && !uploadedDocs[s.key]).map(s => s.label);
+  if (missing.length) {
+    toast(`Missing required document${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`, 'error');
+    missing.forEach(label => {
+      const slot = docSlots.find(s => s.label === label);
+      const zone = document.getElementById('dz-' + slot.key);
+      if (zone) zone.style.borderColor = 'var(--danger)';
+    });
+    return;
+  }
+
+  /* ── SAVE REAL REGISTRATION DATA TO SHARED STORE ── */
+  const STORE_KEY = 'sc_manufacturers';
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+
+  // Read profile values that were saved in Step 1
+  const profileData = JSON.parse(localStorage.getItem('sc_reg_profile') || '{}');
+
+  const newMfg = {
+    id:              Date.now(),
+    isNewRegistration: true,
+    submittedAt:     dateStr,
+    companyName:     profileData.biz      || document.getElementById('f-biz')?.value?.trim()   || 'New Manufacturer',
+    ownerName:       profileData.name     || document.getElementById('f-name')?.value?.trim()  || '',
+    email:           profileData.email    || document.getElementById('f-email')?.value?.trim() || '',
+    phone:           profileData.phone    || document.getElementById('f-phone')?.value?.trim() || '',
+    location:        profileData.addr     || document.getElementById('f-addr')?.value?.trim()  || '',
+    category:        profileData.cat      || document.getElementById('f-cat')?.value           || '',
+    gst:             profileData.gst      || document.getElementById('f-gst')?.value?.trim()   || '',
+    moq:             profileData.moq      || document.getElementById('f-moq')?.value           || '',
+    leadTime:        profileData.leadTime || document.getElementById('f-lead')?.value          || '',
+    description:     profileData.desc     || document.getElementById('f-desc')?.value?.trim()  || '',
+    status:          'Pending',
+    rating:          0,
+    reviews:         0,
+    sentiment:       0,
+    fulfillment:     0,
+    refundRate:      0,
+    responseTime:    '—',
+    documents: Object.entries(uploadedDocs).map(([key, doc]) => ({
+      type: docSlots.find(s => s.key === key)?.label || key,
+      date: dateStr,
+      fileName: doc.name,
+    })),
+  };
+
+  // Merge into shared store
+  try {
+    const existing = JSON.parse(localStorage.getItem(STORE_KEY) || '[]');
+    existing.push(newMfg);
+    localStorage.setItem(STORE_KEY, JSON.stringify(existing));
+    // Save own ID so approved dashboard can look up status
+    localStorage.setItem('sc_my_mfg_id', String(newMfg.id));
+  } catch(e) {
+    console.warn('localStorage write failed', e);
+  }
+
+  documentsDone = true;
+  markStepDone(2);
+  document.getElementById('tab-3').classList.add('active');
+  toast('Documents submitted! Moving to review stage…', 'success');
+  setTimeout(() => goToStep(3), 800);
+}
+
+/* ════════════════════════════════════
+   DEV: SIMULATE APPROVAL
+════════════════════════════════════ */
+function simulateApproval() {
+  // Find this manufacturer in the shared store and mark as Verified
+  try {
+    const myId   = localStorage.getItem('sc_my_mfg_id');
+    const stored = JSON.parse(localStorage.getItem('sc_manufacturers') || '[]');
+    const m      = myId ? stored.find(x => String(x.id) === myId) : null;
+    if (m) {
+      m.status = 'Verified';
+      localStorage.setItem('sc_manufacturers', JSON.stringify(stored));
+    }
+  } catch(e) {}
+  toast('🎉 Account approved! Redirecting to full dashboard…', 'success');
+  setTimeout(() => { window.location.href = 'manufacturer_approved.html'; }, 1800);
+}
+
+/* ════════════════════════════════════
+   TOAST
+════════════════════════════════════ */
+function toast(msg, type='info') {
+  const icons = {
+    success: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+    error:   '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    info:    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  };
+  const el = document.createElement('div');
+  el.className = `toast t-${type === 'error' ? 'error' : type === 'success' ? 'success' : 'info'}`;
+  el.innerHTML = `${icons[type]||icons.info}<span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+/* ════════════════════════════════════
+   INIT
+════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  updateCompletion();
+  initDocGrid();
+});
+</script>
+</body>
+</html>
